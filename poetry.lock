@@ -38,6 +38,17 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-split-settings"
+version = "1.3.0"
+description = "Organize Django settings into multiple files and directories. Easily override and modify settings. Use wildcards and optional settings files."
+optional = false
+python-versions = ">=3.9,<4.0"
+files = [
+    {file = "django_split_settings-1.3.0-py3-none-any.whl", hash = "sha256:003068ab6cf4016ebb37eb743edd401d92405ef12bf80e42cd7bd9bcf86304fc"},
+    {file = "django_split_settings-1.3.0.tar.gz", hash = "sha256:725af58709b6c93a185fdf9d697089ca810fef48f716457fe70724b373e0fe3b"},
+]
+
+[[package]]
 name = "flake8"
 version = "6.1.0"
 description = "the modular source code checker: pep8 pyflakes and co"
@@ -222,4 +233,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "0ec9d70fe2a64a419ec62ec4b46c1c232f52e7fd1bef0e160d8a16db46405abb"
+content-hash = "299586a728da5463f86e75f1fc3baf60931bd5e0ffc33c4b02a9e027aa17bb51"
