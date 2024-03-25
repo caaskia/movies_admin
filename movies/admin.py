@@ -8,11 +8,6 @@ class GenreAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(FilmWork)
-class FilmWorkAdmin(admin.ModelAdmin):
-    pass
-
-
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
     pass
@@ -23,8 +18,21 @@ class PersonFilmWorkAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(GenreFilmWork)
-class GenreFilmWorkAdmin(admin.ModelAdmin):
-    pass
+class GenreFilmworkInline(admin.TabularInline):
+    model = GenreFilmWork
+
+
+@admin.register(FilmWork)
+class FilmworkAdmin(admin.ModelAdmin):
+    inlines = (GenreFilmworkInline,)
+
+    # Отображение полей в списке
+    list_display = ('title', 'type', 'creation_date', 'rating', 'created', 'modified')
+
+    # Фильтрация в списке
+    list_filter = ('type',)
+
+    # Поиск по полям
+    search_fields = ('title', 'description', 'id')
 
 
