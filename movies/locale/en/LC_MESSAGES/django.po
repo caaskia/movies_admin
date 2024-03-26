@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-23 15:59+0000\n"
+"POT-Creation-Date: 2024-03-26 08:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,11 +22,27 @@ msgstr ""
 msgid "movies"
 msgstr "movies"
 
+#: movies/models.py:17 movies/models.py:67 movies/models.py:96
+msgid "Created"
+msgstr "Creation date"
+
+#: movies/models.py:18
+msgid "Modified"
+msgstr "Modified"
+
+#: movies/models.py:26
+msgid "Movie"
+msgstr "Movies"
+
+#: movies/models.py:27
+msgid "TV Show"
+msgstr "TV Show"
+
 #: movies/models.py:29
 msgid "Title"
 msgstr "Title"
 
-#: movies/models.py:30
+#: movies/models.py:30 movies/models.py:53
 msgid "Description"
 msgstr "Description"
 
@@ -49,3 +65,27 @@ msgstr "Certificate"
 #: movies/models.py:40
 msgid "File"
 msgstr "File"
+
+#: movies/models.py:52
+msgid "Name"
+msgstr "Name"
+
+#: movies/models.py:76
+msgid "Full name"
+msgstr "Full name"
+
+#: movies/models.py:89
+msgid "Actor"
+msgstr "Actor"
+
+#: movies/models.py:90
+msgid "Producer"
+msgstr "Producer"
+
+#: movies/models.py:91
+msgid "Director"
+msgstr "Director"
+
+#: movies/models.py:95
+msgid "Role"
+msgstr "Role"

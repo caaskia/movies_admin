@@ -6,14 +6,6 @@ from django.db import models
 import uuid
 
 
-class TimeStampedMixin(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
-
-
 class UUIDMixin(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -21,10 +13,18 @@ class UUIDMixin(models.Model):
         abstract = True
 
 
+class TimeStampedMixin(models.Model):
+    created = models.DateTimeField(_('Created'), auto_now_add=True)
+    modified = models.DateTimeField(_('Modified'), auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
 class FilmWork(TimeStampedMixin, UUIDMixin):
     class TypeChoices(models.TextChoices):
-        MOVIE = 'movie', 'Movie'
-        TV_SHOW = 'tv_show', 'TV Show'
+        MOVIE = 'movie', _('Movie')
+        TV_SHOW = 'tv_show', _('TV Show')
 
     title = models.CharField(_('Title'), max_length=255)
     description = models.TextField(_('Description'), blank=True, null=True)
@@ -49,8 +49,8 @@ class FilmWork(TimeStampedMixin, UUIDMixin):
 
 
 class Genre(TimeStampedMixin, UUIDMixin):
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    name = models.CharField(_('Name'), max_length=255)
+    description = models.TextField(_('Description'), blank=True)
 
     class Meta:
         db_table = "content\".\"genre"
@@ -64,7 +64,7 @@ class Genre(TimeStampedMixin, UUIDMixin):
 class GenreFilmWork(UUIDMixin):
     film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE)
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(_('Created'), auto_now_add=True)
 
     class Meta:
         db_table = "content\".\"genre_film_work"
@@ -73,7 +73,7 @@ class GenreFilmWork(UUIDMixin):
 
 
 class Person(TimeStampedMixin, UUIDMixin):
-    full_name = models.TextField()
+    full_name = models.TextField(_('Full name'))
 
     class Meta:
         db_table = "content\".\"person"
@@ -86,14 +86,14 @@ class Person(TimeStampedMixin, UUIDMixin):
 
 class PersonFilmWork(UUIDMixin):
     class RoleChoices(models.TextChoices):
-        ACTOR = 'actor', 'Actor'
-        PRODUCER = 'producer', 'Producer'
-        DIRECTOR = 'director', 'Director'
+        ACTOR = 'actor', _('Actor')
+        PRODUCER = 'producer', _('Producer')
+        DIRECTOR = 'director', _('Director')
 
     film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE, related_name='person_roles')
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    role = models.CharField(max_length=8, choices=RoleChoices.choices)
-    created = models.DateTimeField(auto_now_add=True)
+    role = models.CharField(_('Role'), max_length=8, choices=RoleChoices.choices)
+    created = models.DateTimeField(_('Created'), auto_now_add=True)
 
     class Meta:
         db_table = "content\".\"person_film_work"
