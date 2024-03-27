@@ -16,6 +16,8 @@ class UUIDMixin(models.Model):
 class TimeStampedMixin(models.Model):
     created = models.DateTimeField(_('Created'), auto_now_add=True)
     modified = models.DateTimeField(_('Modified'), auto_now=True)
+    # created_at = models.DateTimeField(blank=True, null=True)
+    # updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         abstract = True
@@ -29,12 +31,12 @@ class FilmWork(TimeStampedMixin, UUIDMixin):
     title = models.CharField(_('Title'), max_length=255)
     description = models.TextField(_('Description'), blank=True, null=True)
     creation_date = models.DateField(_('Creation date'), blank=True, null=True)
-    rating = models.FloatField(_('Rating'), blank=True,
+    rating = models.FloatField(_('Rating'), blank=True, null=True,
                                validators=[MinValueValidator(0),
                                            MaxValueValidator(100)])
     type = models.CharField(_('Type'), max_length=8, choices=TypeChoices.choices)
     genres = models.ManyToManyField('Genre', through='GenreFilmWork', related_name='film_works')
-    certificate = models.CharField(_('Certificate'), max_length=512, blank=True)
+    certificate = models.CharField(_('Certificate'), max_length=512, blank=True, null=True)
     # Параметр upload_to указывает, в какой подпапке будут храниться загружемые файлы.
     # Базовая папка указана в файле настроек как MEDIA_ROOT
     file_path = models.FileField(_('File'), blank=True, null=True, upload_to='movies/')
@@ -50,20 +52,20 @@ class FilmWork(TimeStampedMixin, UUIDMixin):
 
 class Genre(TimeStampedMixin, UUIDMixin):
     name = models.CharField(_('Name'), max_length=255)
-    description = models.TextField(_('Description'), blank=True)
+    description = models.TextField(_('Description'), blank=True, null=True)
 
     class Meta:
         db_table = "content\".\"genre"
-        verbose_name = 'Жанр'
-        verbose_name_plural = 'Жанры'
+        verbose_name = _('Genre')
+        verbose_name_plural = _('Genres')
 
     def __str__(self):
         return self.name
 
 
 class GenreFilmWork(UUIDMixin):
-    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE)
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
+    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE, verbose_name=_('Film work'))
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, verbose_name=_('Genre'))
     created = models.DateTimeField(_('Created'), auto_now_add=True)
 
     class Meta:
@@ -77,8 +79,8 @@ class Person(TimeStampedMixin, UUIDMixin):
 
     class Meta:
         db_table = "content\".\"person"
-        verbose_name = 'Персона'
-        verbose_name_plural = 'Персоны'
+        verbose_name = _('Person')
+        verbose_name_plural = _('Persons')
 
     def __str__(self):
         return self.full_name
@@ -90,8 +92,8 @@ class PersonFilmWork(UUIDMixin):
         PRODUCER = 'producer', _('Producer')
         DIRECTOR = 'director', _('Director')
 
-    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE, related_name='person_roles')
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE, related_name='person_roles', verbose_name=_('Film work'))
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='film_works', verbose_name=_('Person'))
     role = models.CharField(_('Role'), max_length=8, choices=RoleChoices.choices)
     created = models.DateTimeField(_('Created'), auto_now_add=True)
 
