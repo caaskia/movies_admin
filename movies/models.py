@@ -16,11 +16,34 @@ class UUIDMixin(models.Model):
 class TimeStampedMixin(models.Model):
     created = models.DateTimeField(_('Created'), auto_now_add=True)
     modified = models.DateTimeField(_('Modified'), auto_now=True)
-    # created_at = models.DateTimeField(blank=True, null=True)
-    # updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         abstract = True
+
+
+class Genre(TimeStampedMixin, UUIDMixin):
+    name = models.CharField(_('Name'), max_length=255)
+    description = models.TextField(_('Description'), blank=True, null=True)
+
+    class Meta:
+        db_table = "content\".\"genre"
+        verbose_name = _('Genre')
+        verbose_name_plural = _('Genres')
+
+    def __str__(self):
+        return self.name
+
+
+class Person(TimeStampedMixin, UUIDMixin):
+    full_name = models.TextField(_('Full name'))
+
+    class Meta:
+        db_table = "content\".\"person"
+        verbose_name = _('Person')
+        verbose_name_plural = _('Persons')
+
+    def __str__(self):
+        return self.full_name
 
 
 class FilmWork(TimeStampedMixin, UUIDMixin):
@@ -50,42 +73,6 @@ class FilmWork(TimeStampedMixin, UUIDMixin):
         return self.title
 
 
-class Genre(TimeStampedMixin, UUIDMixin):
-    name = models.CharField(_('Name'), max_length=255)
-    description = models.TextField(_('Description'), blank=True, null=True)
-
-    class Meta:
-        db_table = "content\".\"genre"
-        verbose_name = _('Genre')
-        verbose_name_plural = _('Genres')
-
-    def __str__(self):
-        return self.name
-
-
-class GenreFilmWork(UUIDMixin):
-    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE, verbose_name=_('Film work'))
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, verbose_name=_('Genre'))
-    created = models.DateTimeField(_('Created'), auto_now_add=True)
-
-    class Meta:
-        db_table = "content\".\"genre_film_work"
-        verbose_name = 'Жанр фильма'
-        verbose_name_plural = 'Жанры фильма'
-
-
-class Person(TimeStampedMixin, UUIDMixin):
-    full_name = models.TextField(_('Full name'))
-
-    class Meta:
-        db_table = "content\".\"person"
-        verbose_name = _('Person')
-        verbose_name_plural = _('Persons')
-
-    def __str__(self):
-        return self.full_name
-
-
 class PersonFilmWork(UUIDMixin):
     class RoleChoices(models.TextChoices):
         ACTOR = 'actor', _('Actor')
@@ -101,3 +88,16 @@ class PersonFilmWork(UUIDMixin):
         db_table = "content\".\"person_film_work"
         verbose_name = 'Персона фильма'
         verbose_name_plural = 'Персоны фильма'
+        unique_together = [['film_work', 'person', 'role']]
+
+
+class GenreFilmWork(UUIDMixin):
+    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE, verbose_name=_('Film work'))
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, verbose_name=_('Genre'))
+    created = models.DateTimeField(_('Created'), auto_now_add=True)
+
+    class Meta:
+        db_table = "content\".\"genre_film_work"
+        verbose_name = 'Жанр фильма'
+        verbose_name_plural = 'Жанры фильма'
+        unique_together = [['genre', 'film_work']]
