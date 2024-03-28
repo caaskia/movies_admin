@@ -21,31 +21,6 @@ class TimeStampedMixin(models.Model):
         abstract = True
 
 
-class Genre(TimeStampedMixin, UUIDMixin):
-    name = models.CharField(_('Name'), max_length=255)
-    description = models.TextField(_('Description'), blank=True, null=True)
-
-    class Meta:
-        db_table = "content\".\"genre"
-        verbose_name = _('Genre')
-        verbose_name_plural = _('Genres')
-
-    def __str__(self):
-        return self.name
-
-
-class Person(TimeStampedMixin, UUIDMixin):
-    full_name = models.TextField(_('Full name'))
-
-    class Meta:
-        db_table = "content\".\"person"
-        verbose_name = _('Person')
-        verbose_name_plural = _('Persons')
-
-    def __str__(self):
-        return self.full_name
-
-
 class FilmWork(TimeStampedMixin, UUIDMixin):
     class TypeChoices(models.TextChoices):
         MOVIE = 'movie', _('Movie')
@@ -71,6 +46,31 @@ class FilmWork(TimeStampedMixin, UUIDMixin):
 
     def __str__(self):
         return self.title
+
+
+class Genre(TimeStampedMixin, UUIDMixin):
+    name = models.CharField(_('Name'), max_length=255)
+    description = models.TextField(_('Description'), blank=True, null=True)
+
+    class Meta:
+        db_table = "content\".\"genre"
+        verbose_name = _('Genre')
+        verbose_name_plural = _('Genres')
+
+    def __str__(self):
+        return self.name
+
+
+class Person(TimeStampedMixin, UUIDMixin):
+    full_name = models.TextField(_('Full name'))
+
+    class Meta:
+        db_table = "content\".\"person"
+        verbose_name = _('Person')
+        verbose_name_plural = _('Persons')
+
+    def __str__(self):
+        return self.full_name
 
 
 class PersonFilmWork(UUIDMixin):
