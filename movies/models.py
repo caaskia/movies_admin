@@ -79,7 +79,7 @@ class PersonFilmWork(UUIDMixin):
         PRODUCER = 'producer', _('Producer')
         DIRECTOR = 'director', _('Director')
 
-    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE, related_name='person_roles', verbose_name=_('Film work'))
+    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE, related_name='persons', verbose_name=_('Film work'))
     person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='film_works', verbose_name=_('Person'))
     role = models.CharField(_('Role'), max_length=8, choices=RoleChoices.choices)
     created = models.DateTimeField(_('Created'), auto_now_add=True)
