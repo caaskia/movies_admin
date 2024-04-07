@@ -48,10 +48,9 @@ def run():
 
 
     FilmWork.objects.filter(genres__name='Western').count()
-    print(f"connection.queries {len(connection.queries)}")
 
-    reset_queries()
-    len(FilmWork.objects.filter(genres__name='Western'))
+    # reset_queries()
+    # len(FilmWork.objects.filter(genres__name='Western'))
 
     print(f"connection.queries {len(connection.queries)}")
 

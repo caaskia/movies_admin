@@ -1,0 +1,18 @@
+FilmWork.objects.filter(rating__gte=8, creation_date__gte=datetime.date(year=2020, month=1, day=1))
+
+# Q object
+FilmWork.objects.filter(Q(rating__gte=8) | Q(creation_date__gte=datetime.date(year=2020, month=1, day=1)))
+
+SELECT "content"."film_work"."id",
+       "content"."film_work"."created",
+       "content"."film_work"."modified",
+       "content"."film_work"."title",
+       "content"."film_work"."description",
+       "content"."film_work"."creation_date",
+       "content"."film_work"."rating",
+       "content"."film_work"."type",
+       "content"."film_work"."certificate",
+       "content"."film_work"."file_path"
+FROM   "content"."film_work"
+WHERE  ( "content"."film_work"."rating" >= 8.0
+          OR "content"."film_work"."creation_date" >= '2020-01-01' :: DATE );
