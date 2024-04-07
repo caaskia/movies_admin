@@ -103,7 +103,7 @@ class PersonFilmWork(UUIDMixin):
     film_work = models.ForeignKey(
         FilmWork,
         on_delete=models.CASCADE,
-        related_name="persons",
+        related_name="filmwork",
         verbose_name=_("Film work"),
     )
     person = models.ForeignKey(
