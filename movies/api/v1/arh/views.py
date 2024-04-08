@@ -4,8 +4,6 @@ from django.views.generic.list import BaseListView
 from movies.models import FilmWork
 from django.core.paginator import Paginator
 
-from movies.serializers import MovieSerializer
-
 
 class MoviesApiMixin:
     model = FilmWork
@@ -35,15 +33,9 @@ class MoviesListApi(MoviesApiMixin, BaseListView):
         }
         return self.render_to_response(context)
 
+
 class MoviesDetailApi(MoviesApiMixin, BaseDetailView):
     def get_context_data(self, **kwargs):
         obj = self.get_object()
-        serializer = MovieSerializer(obj)  # Use your serializer to serialize the model instance
-        return serializer.data
-
-
-# class MoviesDetailApi(MoviesApiMixin, BaseDetailView):
-#     def get_context_data(self, **kwargs):
-#         obj = self.get_object()
-#         context = obj.__dict__  # Convert model object to dictionary
-#         return context
+        context = obj.__dict__  # Convert model object to dictionary
+        return context
