@@ -1,11 +1,19 @@
 from rest_framework import serializers
-from movies.models import FilmWork, PersonFilmWork
+from movies.models import FilmWork, PersonFilmWork, Genre
 
+
+# class FilmWorkSerializer(serializers.ModelSerializer):
+
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = ['name']
 
 class MovieSerializer(serializers.ModelSerializer):
     actors = serializers.SerializerMethodField()
     directors = serializers.SerializerMethodField()
     writers = serializers.SerializerMethodField()
+    genres = GenreSerializer(many=True)
 
     class Meta:
         model = FilmWork
