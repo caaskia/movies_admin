@@ -8,6 +8,9 @@ from rest_framework.views import APIView
 from movies.models import FilmWork
 from movies.serializers import MovieSerializer
 
+# curl http://127.0.0.1:8000/api/v1/movies/movies?page=2
+# curl http://127.0.0.1:8000/api/v1/movies/78efe505-6ef8-41f7-88ef-15840be2e680
+# curl http:////127.0.0.1:8000/api/v1/movies/wrongUuid/
 
 class MoviesApiMixin:
     model = FilmWork
