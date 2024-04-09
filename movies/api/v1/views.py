@@ -13,7 +13,8 @@ class MoviesListApi(APIView):
         # Assuming you have queryset containing all movies
 
         # movies = FilmWork.objects.all()
-        movies = FilmWork.objects.prefetch_related("genres", "persons").all()
+        # movies = FilmWork.objects.prefetch_related("genres", "persons").all()
+        movies = FilmWork.objects.prefetch_related("genres", "filmwork__person").all()
 
         # Paginate the queryset
         paginator = Paginator(movies, per_page=50)

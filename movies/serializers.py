@@ -50,28 +50,26 @@ class MovieSerializer(serializers.ModelSerializer):
         return data
 
     def get_actors(self, obj):
-        """
-        Get the list of actors for the film work.
-        """
-        return [
-            person.full_name
-            for person in obj.persons.filter(personfilmwork__role="actor")
-        ]
+        return self.get_persons_by_role(obj, "actor")
 
     def get_directors(self, obj):
-        """
-        Get the list of directors for the film work.
-        """
-        return [
-            person.full_name
-            for person in obj.persons.filter(personfilmwork__role="director")
-        ]
+        return self.get_persons_by_role(obj, "director")
 
     def get_writers(self, obj):
-        """
-        Get the list of writers for the film work.
-        """
-        return [
-            person.full_name
-            for person in obj.persons.filter(personfilmwork__role="writer")
-        ]
+        return self.get_persons_by_role(obj, "writer")
+
+    def get_persons_by_role(self, obj, role):
+        persons = obj.filmwork.filter(role=role)
+        return [person.person.full_name for person in persons]
+
+
+#  def get_related_persons(self, persons_qs, role):
+#     return [
+#         person.full_name
+#         for person in persons_qs
+#         if person.personfilmwork.filter(role=role).exists()
+#     ]
+
+#        return self.get_related_persons(obj.persons.all(), "actor")
+#       return self.get_related_persons(obj.persons.all(), "director")
+#       return self.get_related_persons(obj.persons.all(), "writer")
