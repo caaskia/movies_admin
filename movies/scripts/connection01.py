@@ -1,8 +1,8 @@
 # python manage.py runscript connection01
 
-from django.db import connection
-from django.db import reset_queries
+from django.db import connection, reset_queries
 from movies.models import FilmWork, Genre, GenreFilmWork
+
 
 def run():
     # genres = Genre.objects.all()
@@ -46,14 +46,9 @@ def run():
     #     print(filmwork.genres.all())
     #     print(filmwork.persons.filter(person__full_name='Robert'))
 
-
-    FilmWork.objects.filter(genres__name='Western').count()
+    FilmWork.objects.filter(genres__name="Western").count()
 
     # reset_queries()
     # len(FilmWork.objects.filter(genres__name='Western'))
 
     print(f"connection.queries {len(connection.queries)}")
-
-
-
-

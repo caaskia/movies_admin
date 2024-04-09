@@ -39,6 +39,9 @@ class FilmWork(TimeStampedMixin, UUIDMixin):
     genres = models.ManyToManyField(
         "Genre", through="GenreFilmWork", related_name="film_works"
     )
+    persons = models.ManyToManyField(
+        "Person", through="PersonFilmWork", related_name="film_works"
+    )
     certificate = models.CharField(
         _("Certificate"), max_length=512, blank=True, null=True
     )
