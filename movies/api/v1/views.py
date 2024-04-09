@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.list import BaseListView
@@ -7,10 +8,6 @@ from rest_framework.views import APIView
 
 from movies.models import FilmWork
 from movies.serializers import MovieSerializer
-
-# curl http://127.0.0.1:8000/api/v1/movies/movies?page=2
-# curl http://127.0.0.1:8000/api/v1/movies/78efe505-6ef8-41f7-88ef-15840be2e680
-# curl http:////127.0.0.1:8000/api/v1/movies/wrongUuid/
 
 class MoviesApiMixin:
     model = FilmWork
@@ -22,19 +19,30 @@ class MoviesApiMixin:
     def render_to_response(self, context, **response_kwargs):
         return JsonResponse(context)
 
+class MoviesListApi(APIView):
+    def get(self, request):
+        # Assuming you have queryset containing all movies
+        movies = FilmWork.objects.all()
 
-class CustomPagination(pagination.PageNumberPagination):
-    page_size = 50
+        # Paginate the queryset
+        paginator = Paginator(movies, per_page=50)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
 
+        # Serialize the paginated queryset
+        serializer = MovieSerializer(page_obj, many=True)
 
-class MoviesListApi(MoviesApiMixin, generics.ListAPIView):
-    serializer_class = MovieSerializer
-    pagination_class = CustomPagination  # Assuming you have defined CustomPagination
+        # Construct the response data
+        response_data = {
+            'count': paginator.count,
+            'total_pages': paginator.num_pages,
+            'prev': page_obj.previous_page_number() if page_obj.has_previous() else None,
+            'next': page_obj.next_page_number() if page_obj.has_next() else None,
+            'results': serializer.data
+        }
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        # Your custom queryset logic here
-        return queryset
+        return Response(response_data)
+
 
 
 class MoviesDetailApi(APIView):
