@@ -1,19 +1,23 @@
 from rest_framework import serializers
 from movies.models import FilmWork, PersonFilmWork, Genre
 
-
-# class FilmWorkSerializer(serializers.ModelSerializer):
-
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
         fields = ['name']
 
 class MovieSerializer(serializers.ModelSerializer):
-    genres = GenreSerializer(many=True)
+    # genres = GenreSerializer(many=True)
+    genres = serializers.StringRelatedField(many=True)
     actors = serializers.SerializerMethodField()
     directors = serializers.SerializerMethodField()
     writers = serializers.SerializerMethodField()
+
+    # Для поля 'creation_date' используется 'CharField', чтобы представить дату как строку
+    creation_date = serializers.CharField()
+
+    # Для поля 'rating' используется 'DecimalField', которое соответствует числовому типу данных
+    rating = serializers.DecimalField(max_digits=3, decimal_places=1)
 
     class Meta:
         model = FilmWork
@@ -25,6 +29,13 @@ class MovieSerializer(serializers.ModelSerializer):
         # Add total_pages and prev to the response data
         data['total_pages'] = self.context.get('total_pages')
         data['prev'] = self.context.get('prev')
+
+        try:
+            data['rating'] = float(data.get('rating', 0))
+        except (TypeError, ValueError):
+            # Если значение 'rating' не может быть преобразовано в число, установим его в значение по умолчанию
+            data['rating'] = 0
+
         return data
 
     def get_actors(self, obj):

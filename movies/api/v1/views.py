@@ -27,6 +27,10 @@ class MoviesListApi(APIView):
         # Paginate the queryset
         paginator = Paginator(movies, per_page=50)
         page_number = request.GET.get('page')
+        # Check if the request is for the last page
+        if page_number == 'last':
+            page_number = paginator.num_pages  # Set page_number to the last page number
+
         page_obj = paginator.get_page(page_number)
 
         # Serialize the paginated queryset
@@ -37,9 +41,14 @@ class MoviesListApi(APIView):
             'count': paginator.count,
             'total_pages': paginator.num_pages,
             'prev': page_obj.previous_page_number() if page_obj.has_previous() else None,
+            # 'prev': page_obj.previous_page_number() - 1 if page_obj.has_previous() else None,
             'next': page_obj.next_page_number() if page_obj.has_next() else None,
             'results': serializer.data
         }
+
+        # If the request is for the last page, adjust the 'prev' value
+        # if page_number == paginator.num_pages:
+        #     response_data['prev'] = page_obj.number - 1 if page_obj.number > 1 else None
 
         return Response(response_data)
 
