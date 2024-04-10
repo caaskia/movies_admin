@@ -36,18 +36,18 @@ class FilmWork(TimeStampedMixin, UUIDMixin):
         validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
     type = models.CharField(_("Type"), max_length=8, choices=TypeChoices.choices)
-    genres = models.ManyToManyField(
-        "Genre", through="GenreFilmWork", related_name="film_works"
-    )
-    persons = models.ManyToManyField(
-        "Person", through="PersonFilmWork", related_name="film_works"
-    )
     certificate = models.CharField(
         _("Certificate"), max_length=512, blank=True, null=True
     )
     # Параметр upload_to указывает, в какой подпапке будут храниться загружемые файлы.
     # Базовая папка указана в файле настроек как MEDIA_ROOT
     file_path = models.FileField(_("File"), blank=True, null=True, upload_to="movies/")
+    genres = models.ManyToManyField(
+        "Genre", through="GenreFilmWork", related_name="film_works"
+    )
+    persons = models.ManyToManyField(
+        "Person", through="PersonFilmWork", related_name="film_works"
+    )
 
     class Meta:
         db_table = 'content"."film_work'
@@ -73,9 +73,17 @@ class Genre(TimeStampedMixin, UUIDMixin):
 
 class GenreFilmWork(UUIDMixin):
     film_work = models.ForeignKey(
-        FilmWork, on_delete=models.CASCADE, verbose_name=_("Film work")
+        FilmWork,
+        on_delete=models.CASCADE,
+        related_name="genrefilmwork",
+        verbose_name=_("Film work"),
     )
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, verbose_name=_("Genre"))
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.CASCADE,
+        related_name="genrefilmwork",
+        verbose_name=_("Genre"),
+    )
     created = models.DateTimeField(_("Created"), auto_now_add=True)
 
     class Meta:
@@ -106,7 +114,7 @@ class PersonFilmWork(UUIDMixin):
     film_work = models.ForeignKey(
         FilmWork,
         on_delete=models.CASCADE,
-        related_name="filmwork",
+        related_name="personfilmwork",
         verbose_name=_("Film work"),
     )
     person = models.ForeignKey(
