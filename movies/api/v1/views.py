@@ -1,20 +1,26 @@
 from django.core.paginator import Paginator
+from django.db.models import Prefetch
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from movies.models import FilmWork
+from movies.models import FilmWork, GenreFilmWork, PersonFilmWork
 from movies.serializers import MovieSerializer
 
 
 class MoviesListApi(APIView):
 
     def get(self, request):
-        # Assuming you have queryset containing all movies
-
-        # movies = FilmWork.objects.all()
-        # movies = FilmWork.objects.prefetch_related("genres", "persons").all()
-        movies = FilmWork.objects.prefetch_related("genres", "filmwork__person").all()
+        # Get all movies with genres and persons
+        movies = FilmWork.objects.prefetch_related(
+            Prefetch(
+                "genrefilmwork", queryset=GenreFilmWork.objects.select_related("genre")
+            ),
+            Prefetch(
+                "personfilmwork",
+                queryset=PersonFilmWork.objects.select_related("person"),
+            ),
+        )
 
         # Paginate the queryset
         paginator = Paginator(movies, per_page=50)

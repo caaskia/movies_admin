@@ -1,17 +1,10 @@
 from rest_framework import serializers
-from movies.models import FilmWork, PersonFilmWork, Genre
-
-from django.db.models import prefetch_related_objects
-
-
-class GenreSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Genre
-        fields = ["name"]
+from movies.models import FilmWork
 
 
 class MovieSerializer(serializers.ModelSerializer):
-    genres = serializers.StringRelatedField(many=True)
+    # genres = serializers.StringRelatedField(many=True)
+    genres = serializers.SerializerMethodField()
 
     # Use SerializerMethodField for related persons
     actors = serializers.SerializerMethodField()
@@ -49,27 +42,25 @@ class MovieSerializer(serializers.ModelSerializer):
 
         return data
 
+    def get_genres(self, obj):
+        genres_qs = obj.genrefilmwork.all()
+        return [genrefilmwork.genre.name for genrefilmwork in genres_qs]
+
     def get_actors(self, obj):
-        return self.get_persons_by_role(obj, "actor")
+        persons_qs = obj.personfilmwork.all()
+        return self.get_persons_by_role(persons_qs, "actor")
 
     def get_directors(self, obj):
-        return self.get_persons_by_role(obj, "director")
+        persons_qs = obj.personfilmwork.all()
+        return self.get_persons_by_role(persons_qs, "director")
 
     def get_writers(self, obj):
-        return self.get_persons_by_role(obj, "writer")
+        persons_qs = obj.personfilmwork.all()
+        return self.get_persons_by_role(persons_qs, "writer")
 
-    def get_persons_by_role(self, obj, role):
-        persons = obj.filmwork.filter(role=role)
-        return [person.person.full_name for person in persons]
-
-
-#  def get_related_persons(self, persons_qs, role):
-#     return [
-#         person.full_name
-#         for person in persons_qs
-#         if person.personfilmwork.filter(role=role).exists()
-#     ]
-
-#        return self.get_related_persons(obj.persons.all(), "actor")
-#       return self.get_related_persons(obj.persons.all(), "director")
-#       return self.get_related_persons(obj.persons.all(), "writer")
+    def get_persons_by_role(self, persons_qs, role):
+        return [
+            person_filmwork.person.full_name
+            for person_filmwork in persons_qs
+            if person_filmwork.role == role
+        ]
