@@ -12,6 +12,8 @@ class MoviesListApi(APIView):
 
     def get(self, request):
         # Get all movies with genres and persons
+        # movies = FilmWork.objects.prefetch_related("genrefilmwork", "personfilmwork")
+
         movies = FilmWork.objects.prefetch_related(
             Prefetch(
                 "genrefilmwork", queryset=GenreFilmWork.objects.select_related("genre")
@@ -54,7 +56,23 @@ class MoviesDetailApi(APIView):
 
     def get(self, request, pk):
         try:
-            movie = FilmWork.objects.get(pk=pk)
+            # movie = FilmWork.objects.get(pk=pk)
+
+            movie = FilmWork.objects.prefetch_related(
+                "genrefilmwork", "personfilmwork"
+            ).get(pk=pk)
+
+            # movie = FilmWork.objects.prefetch_related(
+            #     Prefetch(
+            #         "genrefilmwork",
+            #         queryset=GenreFilmWork.objects.select_related("genre"),
+            #     ),
+            #     Prefetch(
+            #         "personfilmwork",
+            #         queryset=PersonFilmWork.objects.select_related("person"),
+            #     ),
+            # ).get(pk=pk)
+
         except FilmWork.DoesNotExist:
             return Response(
                 {"error": "Movie not found"}, status=status.HTTP_404_NOT_FOUND

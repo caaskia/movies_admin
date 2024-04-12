@@ -9,14 +9,16 @@ from django.db.models import Q, F
 
 
 def run():
-    films = FilmWork.objects.filter(filmwork__role=PersonFilmWork.RoleChoices.ACTOR)
-    #    films = FilmWork.objects.filter(filmwork__role=PersonFilmWork.RoleChoices.ACTOR.value)
-
-    full_name = "Harrison Ford"
-    films = FilmWork.objects.filter(filmwork__person__full_name=full_name)
+    films = FilmWork.objects.filter(
+        personfilmwork__role=PersonFilmWork.RoleChoices.ACTOR
+    )
+    print(films.query)
+    films = FilmWork.objects.filter(personfilmwork__person__full_name="Harrison Ford")
+    print(films.query)
 
     reset_queries()
 
+    full_name = "Harrison Ford"
     try:
         avr_rating = FilmWork.objects.filter(
             filmwork__person__full_name=full_name,
